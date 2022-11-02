@@ -137,8 +137,12 @@ class online_tanh:
             
             if self.project:
                 self.w = projection(self.w)
-            self.ww=self.ww.append([self.w], ignore_index=True)
-            self.dif_w = self.dif_w.append([self.diff], ignore_index=True)
+            # self.ww=self.ww.append([self.w], ignore_index=True)
+            pd_w = pd.DataFrame([self.w], columns=self.ww.columns)
+            self.ww = pd.concat([self.ww, pd_w], ignore_index=True)
+            # self.dif_w = self.dif_w.append([self.diff], ignore_index=True)
+            pd_diff = pd.DataFrame([self.diff], columns=self.dif_w.columns)
+            self.dif_w = pd.concat([self.dif_w, pd_diff], ignore_index=True)
         self.iii=i
         # реальные предсказания 
         # это нужно для дальнейшей работы алгоритма: 1 точка
@@ -175,14 +179,17 @@ class online_tanh:
             if self.project:
                 self.w = projection(self.w)
             
-            self.ww=self.ww.append([self.w], ignore_index=True)
+            # self.ww=self.ww.append([self.w], ignore_index=True)
+            pd_w = pd.DataFrame([self.w], columns=self.ww.columns)
+            self.ww = pd.concat([self.ww, pd_w], ignore_index=True)
             
-            self.pred=np.append(self.pred,np.nan)
-            self.dif_w = self.dif_w.append([self.diff], ignore_index=True)
+            self.pred = np.append(self.pred, np.nan)
+            # self.dif_w = self.dif_w.append([self.diff], ignore_index=True)
+            pd_diff = pd.DataFrame([self.diff], columns=self.dif_w.columns)
+            self.dif_w = pd.concat([self.dif_w, pd_diff], ignore_index=True)
             self.pred[-1]=self.w[:-1] @ self.data[-self.order:] + self.w[-1]
 
             
-                    
         if predict_size > 1:
             data_p=np.append(self.data[-self.order:],np.zeros(predict_size)*np.nan)
             
@@ -384,6 +391,3 @@ class Anomaly_detection:
                 bin_metric[i+1:i+winn]=np.zeros(winn-1)
         self.bin_metric = bin_metric        
         return bin_metric
-
-
-    
